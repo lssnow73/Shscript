@@ -24,17 +24,22 @@
 
 function func_usage {
 	echo "Usage:"
-	echo "clone_repository.sh <PLATFORM> <BRANCH>"
-	echo "   <PLATFORM>: LS          CloudWhite-TiFRONT"
+	echo "clone_repository.sh <PLATFORM> <BRANCH> <TAG_NAME>"
+	echo "   <PLATFORM>: TiFRONT Platform abbreviation"
+	echo "               LS          CloudWhite-TiFRONT"
 	echo "               LSn         CloudWhite-TiFRONT-N"
 	echo "               SS          CloudWhite-TiFRONT-SS"
 	echo "               CS          CloudWhite-TiFRONT-CSn"
 	echo "               CSo         CloudWhite-TiFRONT-CSo"
 	echo " "
-	echo "   <BRANCH>  : develop-TiFRONT"
+	echo "   <BRANCH>  : Git Branch name 'git branch -a'"
+	echo "               develop-TiFRONT"
 	echo "               release-TiFRONT"
 	echo "               site_ti_kesco"
+	echo "               tag"
 	echo "               ..."
+	echo "   <TAG_NAME>: Tag name if <BRANCH> is 'tag'. 'git tag'"
+	echo "               PLOS-LS-V3.0.6.0.0-rc4"
 	exit 1
 }
 
@@ -61,6 +66,7 @@ else
 fi
 
 # Use second argument for BRANCH
+
 if [ $# -eq 2 ]; then
 	BRANCH=$2
 
@@ -73,16 +79,36 @@ if [ $# -eq 2 ]; then
 	elif [ "$BRANCH" = "site_ti_kesco" ] || [ "$BRANCH" = "kesco" ]; then
 		PREFIX="KESCO"
 		BRANCH=site_ti_kesco
+	elif [ "$BRANCH" = "tag" ] || [ "$BRANCH" = "Tag" ]; then
+		func_usage
 	else
 		PREFIX="Dev"
 		BRANCH=develop-TiFRONT	# Default Branch
 	fi
+
+	GIT_COMMAND="checkout BRANCH=$BRANCH"
+
+elif [ $# -eq 3 ]; then
+	BRANCH=$2
+	if [ "$BRANCH" = "tag" ] || [ "$BRANCH" = "Tag" ]; then
+		TAG_NAME=$3
+	else
+		TAG_NAME=PLOS-LS-V3.0.6.0.0-rc4
+	fi
+	PREFIX="Tag"
+	GIT_COMMAND="reset NAME=$TAG_NAME"
 else
 	PREFIX="Dev"	# Default prefix
 	BRANCH=develop-TiFRONT	# Default Branch
+	GIT_COMMAND="checkout BRANCH=$BRANCH"
 fi
 
-POSTFIX=`date +%Y%m%d`	# e.g. 20170619 Do you want to Hour? Use %H.
+if [ "$PREFIX" = "Tag" ]; then
+	POSTFIX=`echo $TAG_NAME | awk -F- '{if(NR == 1) print $3"-"$4}'`
+else
+	POSTFIX=`date +%Y%m%d`	# e.g. 20170619 Do you want to Hour? Use %H.
+fi
+
 DIR_NAME=$PREFIX'TiFRONT_'$PLATFORM'_'$POSTFIX
 
 if [ -e $DIR_NAME ]; then
@@ -90,8 +116,10 @@ if [ -e $DIR_NAME ]; then
 fi
 
 echo "Clone to Directory... $DIR_NAME"
+echo "Git command... $GIT_COMMAND"
+
 git clone git+ssh://${USER}@192.168.201.144/opt/git/plos_ls/build_plos/build.git $DIR_NAME
-cd $PWD/$DIR_NAME && ./configure $CONFIG && sh export.sh clone && make checkout BRANCH=$BRANCH
+cd $PWD/$DIR_NAME && ./configure $CONFIG && sh export.sh clone && make $GIT_COMMAND
 
 export USER=$LOGNAME
 
