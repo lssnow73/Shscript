@@ -52,16 +52,22 @@ USER=sslee	# for Git User
 # Use second argument for BRANCH
 PLATFORM=$1
 if [ "$PLATFORM" = "LS" ] || [ "$PLATFORM" = "ls" ]; then
+	PLATFORM=LS
 	CONFIG=CloudWhite-TiFRONT
 elif [ "$PLATFORM" = "LSn" ] || [ "$PLATFORM" = "lsn" ]; then
+	PLATFORM=LSn
 	CONFIG=CloudWhite-TiFRONT-N
 elif [ "$PLATFORM" = "SS" ] || [ "$PLATFORM" = "ss" ]; then
+	PLATFORM=SS
 	CONFIG=CloudWhite-TiFRONT-SS
 elif [ "$PLATFORM" = "CS" ] || [ "$PLATFORM" = "cs" ]; then
+	PLATFORM=CS
 	CONFIG=CloudWhite-TiFRONT-SS
 elif [ "$PLATFORM" = "CSo" ] || [ "$PLATFORM" = "cso" ]; then
+	PLATFORM=CSo
 	CONFIG=CloudWhite-TiFRONT-SS
 else
+	PLATFORM=LSn
 	CONFIG=CloudWhite-TiFRONT-N	# Default Configuration
 fi
 
@@ -85,7 +91,6 @@ if [ $# -eq 2 ]; then
 		PREFIX="Dev"
 		BRANCH=develop-TiFRONT	# Default Branch
 	fi
-
 	GIT_COMMAND="checkout BRANCH=$BRANCH"
 
 elif [ $# -eq 3 ]; then
