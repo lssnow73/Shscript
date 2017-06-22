@@ -70,10 +70,10 @@ fi
 if [ $# -eq 2 ]; then
 	BRANCH=$2
 
-	if [ "$BRANCH" = "develop-TiFRONT" ]; then
+	if [ "$BRANCH" = "develop-TiFRONT" ] || [ "$BRANCH" = "develop" ]; then
 		PREFIX="Dev"
 		BRANCH=develop-TiFRONT
-	elif [ "$BRANCH" = "release-TiFRONT" ]; then
+	elif [ "$BRANCH" = "release-TiFRONT" ] || [ "$BRANCH" = "release" ]; then
 		PREFIX="Rel"
 		BRANCH=release-TiFRONT
 	elif [ "$BRANCH" = "site_ti_kesco" ] || [ "$BRANCH" = "kesco" ]; then
