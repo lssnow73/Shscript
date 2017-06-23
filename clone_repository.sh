@@ -110,7 +110,7 @@ fi
 
 if [ "$PREFIX" = "Tag" ]; then
 	# POSTFIX e.g. 'V3.0.6.0.0-rc4'
-	POSTFIX=`echo $TAG_NAME | awk -F- '{if(NR == 1) print $3"-"$4}'`
+	POSTFIX=`echo $TAG_NAME | awk -F- '{if(NF == 3) print $3;else print $3"-"$4}'`
 else
 	POSTFIX=`date +%Y%m%d`	# e.g. 20170619 Do you want to Hour? Use %H.
 fi
