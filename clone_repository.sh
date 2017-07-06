@@ -36,10 +36,15 @@ function func_usage {
 	echo "               develop-TiFRONT"
 	echo "               release-TiFRONT"
 	echo "               site_ti_kesco"
+	echo "               branch"
 	echo "               tag"
 	echo "               ..."
 	echo "   <TAG_NAME>: Tag name if <BRANCH> is 'tag'. 'git tag'"
 	echo "               PLOS-LS-V3.0.6.0.0-rc4"
+	echo "               ..."
+	echo "               branch name if <BRANCH> is 'branch'. 'git branch -a'"
+	echo "               site_ti_kesco_sec"
+	echo "               ..."
 	exit 1
 }
 
@@ -82,29 +87,39 @@ if [ $# -eq 2 ]; then
 	elif [ "$BRANCH" = "release-TiFRONT" ] || [ "$BRANCH" = "release" ] || [ "$BRANCH" = "rel" ]; then
 		PREFIX="Rel"
 		BRANCH=release-TiFRONT
-	elif [ "$BRANCH" = "site_ti_kesco" ] || [ "$BRANCH" = "kesco" ]; then
+	elif [ "$BRANCH" = "site_ti_kesco" ] || [ "$BRANCH" = "kesco" ] || [ "$BRANCH" = "KESCO" ]; then
 		PREFIX="KESCO"
 		BRANCH=site_ti_kesco
 	elif [ "$BRANCH" = "tag" ] || [ "$BRANCH" = "Tag" ]; then
 		func_usage
 	else
-		PREFIX="Dev"
-		BRANCH=develop-TiFRONT	# Default Branch
+		PREFIX="Branch"
 	fi
 	GIT_COMMAND="checkout BRANCH=$BRANCH"
 
-elif [ $# -eq 3 ]; then
+elif [ $# -ge 3 ]; then
 	BRANCH=$2
 	if [ "$BRANCH" = "tag" ] || [ "$BRANCH" = "Tag" ]; then
+		PREFIX="Tag"
 		TAG_NAME=$3
+		GIT_COMMAND="reset NAME=$TAG_NAME"
+	elif [ "$BRANCH" = "branch" ] || [ "$BRANCH" = "BRANCH" ] || [ "$BRANCH" = "b" ]; then
+		PREFIX="Branch"
+		BRANCH=$3
+		GIT_COMMAND="checkout BRANCH=$BRANCH"
 	else
+		PREFIX="Tag"
 		TAG_NAME=PLOS-LS-V3.0.6.0.0-rc4
+		GIT_COMMAND="reset NAME=$TAG_NAME"
 	fi
-	PREFIX="Tag"
-	GIT_COMMAND="reset NAME=$TAG_NAME"
+
+	if [ $# -eq 4 ]; then
+		DONOT_MAKE="yes"
+	fi
+	#GIT_COMMAND="checkout BRANCH=$TAG_NAME"
 else
-	PREFIX="Dev"	# Default prefix
-	BRANCH=develop-TiFRONT	# Default Branch
+	PREFIX="Rel"	# Default prefix
+	BRANCH=release-TiFRONT	# Default Branch
 	GIT_COMMAND="checkout BRANCH=$BRANCH"
 fi
 
@@ -129,5 +144,7 @@ cd $PWD/$DIR_NAME && ./configure $CONFIG && sh export.sh clone && make $GIT_COMM
 
 export USER=$LOGNAME
 
-make &> /dev/null 2>> error.log
+if [ "$DONOT_MAKE" != "yes" ]; then
+	make &> /dev/null 2>> error.log
+fi
 
