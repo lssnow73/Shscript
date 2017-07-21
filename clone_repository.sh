@@ -67,10 +67,10 @@ elif [ "$PLATFORM" = "SS" ] || [ "$PLATFORM" = "ss" ]; then
 	CONFIG=CloudWhite-TiFRONT-SS
 elif [ "$PLATFORM" = "CS" ] || [ "$PLATFORM" = "cs" ]; then
 	PLATFORM=CS
-	CONFIG=CloudWhite-TiFRONT-SS
+	CONFIG=CloudWhite-TiFRONT-CSn
 elif [ "$PLATFORM" = "CSo" ] || [ "$PLATFORM" = "cso" ]; then
 	PLATFORM=CSo
-	CONFIG=CloudWhite-TiFRONT-SS
+	CONFIG=CloudWhite-TiFRONT-CSo
 else
 	PLATFORM=LSn
 	CONFIG=CloudWhite-TiFRONT-N	# Default Configuration
@@ -90,6 +90,9 @@ if [ $# -eq 2 ]; then
 	elif [ "$BRANCH" = "site_ti_kesco" ] || [ "$BRANCH" = "kesco" ] || [ "$BRANCH" = "KESCO" ]; then
 		PREFIX="KESCO"
 		BRANCH=site_ti_kesco
+	elif [ "$BRANCH" = "site_ti_kesco_sec" ] || [ "$BRANCH" = "kesco_sec" ] || [ "$BRANCH" = "KESCO_SEC" ]; then
+		PREFIX="KESCOSEC"
+		BRANCH=site_ti_kesco_sec
 	elif [ "$BRANCH" = "tag" ] || [ "$BRANCH" = "Tag" ]; then
 		func_usage
 	else
@@ -133,7 +136,8 @@ fi
 DIR_NAME=$PREFIX'TiFRONT_'$PLATFORM'_'$POSTFIX
 
 if [ -e $DIR_NAME ]; then
-	sudo rm -rf $DIR_NAME
+	echo "Exist directory $DIR_NAME. Remove it[y/n]?"
+	sudo rm -i $DIR_NAME
 fi
 
 echo "Clone to Directory... $DIR_NAME"
