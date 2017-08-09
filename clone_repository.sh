@@ -135,10 +135,19 @@ fi
 
 DIR_NAME=$PREFIX'TiFRONT_'$PLATFORM'_'$POSTFIX
 
-if [ -e $DIR_NAME ]; then
-	echo "Exist directory $DIR_NAME. Remove it[y/n]?"
-	sudo rm -i $DIR_NAME
-fi
+dir_count=0
+
+while [ -e $DIR_NAME ]; do
+	let "dir_count++"
+
+	if [ $dir_count -gt 5 ]; then
+		echo "Don't make project! You have many project directory."
+		exit -1
+	else
+		echo "Exist directory $DIR_NAME. Add postfix '$dir_count '"
+		DIR_NAME=$DIR_NAME'_'$dir_count
+	fi
+done
 
 echo "Clone to Directory... $DIR_NAME"
 echo "Git command... $GIT_COMMAND"
