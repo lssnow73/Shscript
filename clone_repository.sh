@@ -136,16 +136,22 @@ fi
 DIR_NAME=$PREFIX'TiFRONT_'$PLATFORM'_'$POSTFIX
 
 dir_count=0
+MAX_PROJECT_DIR=5
 
 while [ -e $DIR_NAME ]; do
 	let "dir_count++"
 
-	if [ $dir_count -gt 5 ]; then
+	if [ $dir_count -gt $MAX_PROJECT_DIR ]; then
 		echo "Don't make project! You have many project directory."
 		exit -1
 	else
 		echo "Exist directory $DIR_NAME. Add postfix '$dir_count '"
-		DIR_NAME=$DIR_NAME'_'$dir_count
+		if [ $dir_count -eq 1 ]; then
+			DIR_NAME=$DIR_NAME'_'$dir_count
+		else
+			DIR_NAME=`echo ${DIR_NAME:0:${#DIR_NAME}-2}'_'$dir_count`
+		fi
+		echo "New directory $DIR_NAME."
 	fi
 done
 
