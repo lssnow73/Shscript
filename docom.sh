@@ -51,6 +51,7 @@ for list in $CON_CHECK_LIST
 do
 	if [ $list == "Exist" ]; then
 		CON_EXIST="Exist"
+		break
 	else
 		CON_EXIST="NotExist"
 	fi
