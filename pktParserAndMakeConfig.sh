@@ -31,8 +31,14 @@ echo -e " no openflow tunnel-mpls enable" >> conn4net.conf
 for vlan in $VLAN_LIST; do
     echo -e "!\ninterface vlan$vlan" >> conn4net.conf
     IPADDR=`cat /mnt/flash/mirror/* | grep "Protocol is 89" -B2 | grep "VLAN Tag: $vlan" -A2 -m1 | awk '/IPSA/{printf "%s" $4}'`
-    echo -e " ip address ${IPADDR:0:$((${#IPADDR}-1))}`expr ${IPADDR:$((${#IPADDR}-1)):$((${#IPADDR}))} + 1`/30" >> conn4net.conf
-    echo -e " ip ospf network point-to-point"
+    IP_LAST=${IPADDR:$((${#IPADDR}-1)):$((${#IPADDR}))}
+    if [ $(( IP_LAST & 1 )) == 1 ]; then
+        MYIP_LAST=`expr $IP_LAST + 1`
+    else
+        MYIP_LAST=`expr $IP_LAST - 1`
+    fi
+    echo -e " ip address ${IPADDR:0:$((${#IPADDR}-1))}$MYIP_LAST/30" >> conn4net.conf
+    echo -e " ip ospf network point-to-point" >> conn4net.conf
 done
 
 echo -e "!" >> conn4net.conf
