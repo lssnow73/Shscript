@@ -8,7 +8,7 @@
 /usr/sbin/klish -q -s /mnt/udisk/ZTPrun.conf
 
 # Wait rpc-api about 15 seconds
-for i in $(seq 1 15); do
+for i in $(seq 1 10); do
     echo -n "."
     sleep 1
 done
@@ -24,7 +24,7 @@ rm -rf /mnt/flash/mirror/*
 
 # Capture packet about 30 seconds
 #for i in {1..30} Not work in sh without bash
-for i in $(seq 1 30); do
+for i in $(seq 1 20); do
     echo -n "."
     sleep 1
 done
