@@ -1,0 +1,98 @@
+clock set timezone KST add 9 0 0
+!
+hostname soltech
+!
+username admin privilege 4 password bcits12!@
+!
+!
+service rpc-api auth-mode basic
+service rpc-api enable ssl ssl-port 10444
+!
+!
+logging server enable
+logging server address 192.168.211.245 source-ip 192.168.118.20
+!
+snmp-server enable
+snmp-server version v2c
+!
+snmp-server community public read-only
+!
+management ip address 192.168.0.2/24
+!
+!
+vlan range 88,104,508,3008,4088,4091,4092
+!
+spanning-tree mode mstp
+spanning-tree mst configuration
+ instance 8 vlan 508
+!
+!
+!
+!
+openflow set dpid 0000002cbe1cc704
+!
+interface eth-0-1
+ jumboframe enable
+ switchport mode trunk
+ switchport trunk allowed vlan add 4091,4092
+ openflow enable
+ vlan-filter disable
+ no openflow tunnel-mpls enable
+ protected-vlan 4091
+ protected-vlan 4092
+!
+interface eth-0-49
+ jumboframe enable
+ switchport mode trunk
+ switchport trunk allowed vlan add 508,3008,4091
+ switchport trunk allowed vlan remove 1
+ spanning-tree port disable
+ openflow enable
+ vlan-filter disable
+ no openflow tunnel-mpls enable
+ protected-vlan 508
+ protected-vlan 3008
+ protected-vlan 4091
+!
+interface eth-0-50
+ jumboframe enable
+ switchport mode trunk
+ switchport trunk allowed vlan add 508,3008,4092
+ switchport trunk allowed vlan remove 1
+ spanning-tree port disable
+ openflow enable
+ vlan-filter disable
+ no openflow tunnel-mpls enable
+ protected-vlan 508
+ protected-vlan 3008
+ protected-vlan 4092
+!
+interface vlan508
+ ip address 192.168.118.20/27
+!
+interface vlan3008
+!
+interface vxlan1
+ tunnel-source-ip 192.168.118.20
+ tunnel-remote-ip 192.168.211.17
+ openflow enable
+!
+!
+!
+ip route 0.0.0.0/0 192.168.118.1
+!
+!
+g8032 ring-id 8 east-interface eth-0-50 west-interface eth-0-49
+  instance 8
+  control-vlan 3008
+  ring enable
+!
+!
+line console 0
+ no line-password
+ no login
+line vty 0 7
+ privilege level 4
+ no line-password
+ login local
+
